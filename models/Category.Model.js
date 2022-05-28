@@ -10,6 +10,11 @@ const CategorySchema = new mongoose.Schema({
     image : {
         type : String,
         required : true
+    },
+    formId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FormBuilder',
+        unique : true
     }
 })
 

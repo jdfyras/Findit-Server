@@ -1,4 +1,5 @@
 const category = require('../models/Category.Model')
+const FormBuilder = require('../models/formBuilder')
 
 exports.addCategory = async  (req, res, next)=>{
     try{
@@ -59,6 +60,15 @@ exports.getCategory = async (req, res, next) =>{
         res.status(201).send(cat)
     }catch(err){
         console.log(err)
+        res.send(err)
+    }
+}
+exports.getFormByCategory = async (req, res, next) =>{
+    try{
+        const _id = req.params._id
+        const cat = category.find({formId : _id})
+        res.send(cat)
+    }catch(err){
         res.send(err)
     }
 }

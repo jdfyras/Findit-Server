@@ -21,8 +21,13 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0 // 0 = user, 1 = admin
     },
- 
-}, {
+    image: {
+        type : String,
+        required : false
+    }
+}, 
+
+{
     timestamps: true
 })
 
