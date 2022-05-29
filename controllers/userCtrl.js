@@ -14,7 +14,6 @@ const {CLIENT_URL} = process.env
 const userCtrl = {
     register: async (req, res) => {
         try {
-            console.log(req)
             const {name, email, password} = req.body
             
             if(!name || !email || !password)
@@ -32,7 +31,7 @@ const userCtrl = {
             const passwordHash = await bcrypt.hash(password, 12)
 
             const newUser = {
-                name, email, password: passwordHash , image : 'http://localhost:5000/image/'+req.file.filename
+                name, email, password: passwordHash
             }
 
             const activation_token = createActivationToken(newUser)
@@ -41,7 +40,7 @@ const userCtrl = {
             sendMail(email, url, "Verify your email address")
 
 
-            res.send({msg: "Register Success! Please activate your email to start."})
+            res.json({msg: "Register Success! Please activate your email to start."})
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -51,13 +50,13 @@ const userCtrl = {
             const {activation_token} = req.body
             const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET)
 
-            const {name, email, password, image} = user
+            const {name, email, password} = user
 
             const check = await Users.findOne({email})
             if(check) return res.status(400).json({msg:"This email already exists."})
 
             const newUser = new Users({
-                name, email, password, image
+                name, email, password
             })
 
             await newUser.save()

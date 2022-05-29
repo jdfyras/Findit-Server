@@ -5,7 +5,7 @@ const authAdmin = require('../middleware/authAdmin')
 const storage = require('../multerUpload')
 
 
-router.post('/register', storage,userCtrl.register)
+router.post('/register',userCtrl.register)
 
 router.post('/activation', userCtrl.activateEmail)
 
