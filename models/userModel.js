@@ -21,7 +21,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0 // 0 = user, 1 = admin
     },
-  
+     avatar: {
+        type: String,
+        default: "https://res.cloudinary.com/dfqhpylj3/image/upload/v1654650670/avatar/avatar_default_vuwqnf.jpg"
+    }
 }, 
 
 {

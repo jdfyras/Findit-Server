@@ -6,6 +6,8 @@ exports.addCategory = async  (req, res, next)=>{
         const newCategory = new category({
             name : req.body.name ,
             image : 'http://localhost:5000/image/'+req.file.filename,
+            formId: req.body.formId,
+
         })
         const response = await newCategory.save()
         res.status(201).send(response)
