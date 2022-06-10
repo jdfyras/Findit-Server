@@ -4,8 +4,7 @@ const auth = require('../middleware/auth')
 const authAdmin = require('../middleware/authAdmin')
 const storage = require('../multerUpload')
 
-
-router.post('/register',userCtrl.register)
+router.post('/register', userCtrl.register)
 
 router.post('/activation', userCtrl.activateEmail)
 
@@ -19,7 +18,7 @@ router.post('/reset', auth, userCtrl.resetPassword)
 
 router.get('/infor', auth, userCtrl.getUserInfor)
 
-router.get('/all_infor', auth, authAdmin, userCtrl.getUsersAllInfor)
+router.get('/all_infor', userCtrl.getUsersAllInfor)
 
 router.get('/logout', userCtrl.logout)
 
@@ -29,11 +28,9 @@ router.patch('/update_role/:id', auth, authAdmin, userCtrl.updateUsersRole)
 
 router.delete('/delete/:id', auth, authAdmin, userCtrl.deleteUser)
 
-
 // Social Login
 router.post('/google_login', userCtrl.googleLogin)
 
 router.post('/facebook_login', userCtrl.facebookLogin)
-
 
 module.exports = router
