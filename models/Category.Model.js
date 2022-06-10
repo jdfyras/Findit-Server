@@ -14,7 +14,6 @@ const CategorySchema = new mongoose.Schema({
     formId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'FormBuilder',
-        unique : true
     }
 })
 

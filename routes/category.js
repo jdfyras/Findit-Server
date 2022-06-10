@@ -3,7 +3,7 @@ const authAdmin = require('../middleware/authAdmin')
 const storage = require('../multerUpload')
 const categoryController = require('../controllers/category')
 
-router.post('/addCateogry',storage,categoryController.addCategory)
+router. post('/addCateogry',storage,categoryController.addCategory)
 router.delete('/deleteCateogry/:_id',categoryController.deleteCategory)
 router.post('/updateCategory/:_id',categoryController.updateCategoryName)
 router.get('',categoryController.getCategorys)

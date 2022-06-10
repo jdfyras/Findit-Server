@@ -1,5 +1,5 @@
 require("dotenv").config();
-const morgan = require('morgan')
+const morgan = require("morgan");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -28,6 +28,7 @@ app.use(fileUpload({
 app.use("/user", require("./routes/userRouter"));
 app.use("/category", require("./routes/category"));
 app.use("/form", require("./routes/formBuilder"));
+app.use("/object", require("./routes/objectRoute"));
 //app.use('/api', require('./routes/upload'))
 
 // Connect to mongodb
@@ -55,5 +56,5 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server is running on port", PORT);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
