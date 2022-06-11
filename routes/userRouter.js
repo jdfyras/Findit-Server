@@ -3,8 +3,7 @@ const userCtrl = require('../controllers/userCtrl')
 
 const storage = require('../multerUpload')
 
-
-router.post('/register',userCtrl.register)
+router.post('/register', userCtrl.register)
 
 router.post('/activation', userCtrl.activateEmail)
 
@@ -28,11 +27,9 @@ router.patch('/update_role/:id', userCtrl.updateUsersRole)
 
 router.delete('/delete/:id', userCtrl.deleteUser)
 
-
 // Social Login
 router.post('/google_login', userCtrl.googleLogin)
 
 router.post('/facebook_login', userCtrl.facebookLogin)
-
 
 module.exports = router

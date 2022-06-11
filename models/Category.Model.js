@@ -1,21 +1,24 @@
 const mongoose = require('mongoose')
 
-
 const CategorySchema = new mongoose.Schema({
-    name : {
-        type :String ,
-        required : false ,
-        unique :false
+    name: {
+        type: String,
+        required: false,
+        unique: false
     },
-    image : {
-        type : String,
-        required : true
+    image: {
+        type: String,
+        required: true
     },
-    formId : {
+    formId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'FormBuilder',
-        unique : true
+        ref: 'FormBuilder'
     }
 })
-
-module.exports = mongoose.model("Category", CategorySchema)
+CategorySchema.virtual('id').get(function () {
+    return this._id.toHexString()
+})
+CategorySchema.set('toJSON', {
+    virtuals: true
+})
+module.exports = mongoose.model('Category', CategorySchema)

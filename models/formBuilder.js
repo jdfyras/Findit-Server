@@ -1,14 +1,13 @@
 const mongoose = require('mongoose')
 const FormBuilderSchema = new mongoose.Schema({
-      name: {
+    name: {
         type: String,
-        required : true
-      },
-      formData: {
+        required: true
+    },
+    formData: {
         type: JSON,
         required: true
-      }
     }
-)
+})
 
-module.exports = mongoose.model("FormBuilder", FormBuilderSchema)
+module.exports = mongoose.model('FormBuilder', FormBuilderSchema)
