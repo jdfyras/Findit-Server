@@ -13,6 +13,6 @@ router.post(
     storage,
     categoryController.updateCategoryImage
 )
-router.get('/formBuilder', categoryController.getFormByCategory)
+router.get('/formBuilder/:_id', categoryController.getFormByCategory)
 
 module.exports = router

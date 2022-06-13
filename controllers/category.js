@@ -39,7 +39,7 @@ exports.updateCategoryImage = async (req, res, next) => {
     try {
         const _id = req.params._id
         const response = await category.findByIdAndUpdate(_id, {
-            image: 'http://localhost:3000/image/' + req.file.filename
+            image: 'http://localhost:5000/image/' + req.file.filename
         })
         res.status(201).send({ message: 'updated' })
     } catch (err) {}
@@ -55,7 +55,7 @@ exports.getCategorys = async (req, res, next) => {
 exports.getCategory = async (req, res, next) => {
     try {
         const _id = req.params._id
-        const cat = await category.findById(_id)
+        const cat = await category.findById(_id).populate('formId')
         res.status(201).send(cat)
     } catch (err) {
         console.log(err)
