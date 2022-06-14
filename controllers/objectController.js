@@ -15,7 +15,8 @@ module.exports = {
                 },
                 statut: req.body.statut,
                 adress: req.body.adress,
-                objectDate: req.body.objectDate
+                objectDate: req.body.objectDate,
+                reponse: req.body.reponse
             })
             const savedObject = await object.save()
             res.send({ savedObject })

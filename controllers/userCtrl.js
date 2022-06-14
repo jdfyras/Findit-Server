@@ -101,7 +101,7 @@ const userCtrl = {
             const refresh_token = createRefreshToken({ id: user._id })
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
-                path: '/user/refresh_token',
+                path: 'http://localhost:5000/user/refresh_token',
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
             })
 
@@ -191,12 +191,12 @@ const userCtrl = {
     },
     updateUser: async (req, res) => {
         try {
-            const { name, avatar } = req.body
+            const { name } = req.body
             await Users.findOneAndUpdate(
                 { _id: req.user.id },
                 {
-                    name,
-                    avatar
+                    name
+                    
                 }
             )
 

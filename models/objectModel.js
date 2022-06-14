@@ -16,6 +16,10 @@ const objectSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
+    reponse: {
+        type: Array,
+        
+    },
     dateTime: { type: Date, default: Date.now }
 })
 objectSchema.virtual('id').get(function () {

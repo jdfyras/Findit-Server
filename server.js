@@ -24,6 +24,8 @@ app.use(fileUpload({
 }))
 */
 // Routes
+app.use('/utilisateur', require('./routes/Responsable'))
+
 app.use('/admin', require('./routes/superAdmin'))
 app.use('/user', require('./routes/userRouter'))
 app.use('/category', require('./routes/category'))
