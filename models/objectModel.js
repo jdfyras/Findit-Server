@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+
 const objectSchema = new mongoose.Schema({
     statut: {
         type: String,
@@ -16,10 +17,11 @@ const objectSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
-    reponse: {
-        type: Array,
-        
+    refUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
+    formInput: { type: mongoose.Schema.Types.Mixed },
     dateTime: { type: Date, default: Date.now }
 })
 objectSchema.virtual('id').get(function () {

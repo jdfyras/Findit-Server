@@ -13,7 +13,7 @@ router.post('/refresh_token', userCtrl.getAccessToken)
 
 router.post('/forgot', userCtrl.forgotPassword)
 
-router.post('/reset',  userCtrl.resetPassword)
+router.post('/reset', userCtrl.resetPassword)
 
 router.get('/infor', userCtrl.getUserInfor)
 
@@ -21,7 +21,7 @@ router.get('/all_infor', userCtrl.getUsersAllInfor)
 
 router.get('/logout', userCtrl.logout)
 
-router.patch('/update',  userCtrl.updateUser)
+router.patch('/update', userCtrl.updateUser)
 
 router.patch('/update_role/:id', userCtrl.updateUsersRole)
 

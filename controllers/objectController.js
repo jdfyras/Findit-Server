@@ -16,7 +16,7 @@ module.exports = {
                 statut: req.body.statut,
                 adress: req.body.adress,
                 objectDate: req.body.objectDate,
-                reponse: req.body.reponse
+                formInput: req.body.formInput
             })
             const savedObject = await object.save()
             res.send({ savedObject })

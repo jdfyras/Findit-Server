@@ -11,11 +11,12 @@ const bodyParser = require('body-parser')
 const path = require('path')
 
 const app = express()
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
-app.use('/image',express.static(path.join('image')))
-app.use(bodyParser.urlencoded({extended:false}))
-app.use(bodyParser.json());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use('/image', express.static(path.join('image')))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(cookieParser())
+app.use(morgan('dev'))
 require('./helpers/mongoDBConfig')
 
 /* 
@@ -31,6 +32,7 @@ app.use('/user', require('./routes/userRouter'))
 app.use('/category', require('./routes/category'))
 app.use('/form', require('./routes/formBuilder'))
 app.use('/object', require('./routes/objectRoute'))
+app.use('/match', require('./routes/matchingRoute'))
 //app.use('/api', require('./routes/upload'))
 
 // Connect to mongodb
