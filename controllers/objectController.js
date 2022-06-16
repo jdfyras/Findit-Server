@@ -13,6 +13,9 @@ module.exports = {
                 refCategory: {
                     _id: exist._id
                 },
+                refUser: {
+                    userId: req.body.userId
+                },
                 statut: req.body.statut,
                 adress: req.body.adress,
                 objectDate: req.body.objectDate,
@@ -30,7 +33,7 @@ module.exports = {
     getAllObjects: async (req, res, next) => {
         try {
             const objects = await objectModel
-                .find()
+                .find({ refUser: req.body.userId })
                 .populate('refCategory')
                 .select()
             console.log(objects)
@@ -43,7 +46,7 @@ module.exports = {
     getObjectByCategory: async (req, res, next) => {
         try {
             const object = await objectModel
-                .find({ refCategory: req.params.id })
+                .find({ refCategory: req.params.id, refUser: req.body.userId })
                 .populate('refCategory')
                 .select()
             return res.json(object)
@@ -56,7 +59,8 @@ module.exports = {
         try {
             const object = await objectModel
                 .findOne({
-                    _id: req.params.id
+                    _id: req.params.id,
+                    refUser: req.body.userId
                 })
                 .populate('refCategory')
                 .select()
@@ -74,7 +78,7 @@ module.exports = {
     updateObject: async (req, res, next) => {
         try {
             const object = await objectModel.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.id, refUser: req.body.userId },
                 req.body,
                 { new: true }
             )
@@ -95,7 +99,8 @@ module.exports = {
     deleteObject: async (req, res, next) => {
         try {
             const object = await objectModel.findOneAndRemove({
-                _id: req.params.id
+                _id: req.params.id,
+                refUser: req.body.userId
             })
             if (!object) return res.status(404).send('could not delete object ')
 

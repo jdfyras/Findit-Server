@@ -50,7 +50,7 @@ exports.updateCategoryImage = async (req, res, next) => {
 }
 exports.getCategorys = async (req, res, next) => {
     try {
-        const response = await category.find()
+        const response = await category.find().populate('formId')
         res.status(201).send(response)
     } catch (err) {
         console.error(err)
