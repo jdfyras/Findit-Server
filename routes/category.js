@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const authAdmin = require('../middleware/authAdmin')
 const storage = require('../multerUpload')
-const categoryController = require('../controllers/category')
+const categoryController = require('../controllers/categoryController')
 
 router.post('/addCateogry', storage, categoryController.addCategory)
 router.delete('/deleteCateogry/:_id', categoryController.deleteCategory)

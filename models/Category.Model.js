@@ -12,7 +12,7 @@ const CategorySchema = new mongoose.Schema({
     },
     formId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'FormBuilder'
+        ref: 'formBuilder'
     }
 })
 CategorySchema.virtual('id').get(function () {

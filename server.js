@@ -2,8 +2,6 @@ require('dotenv').config()
 const morgan = require('morgan')
 const express = require('express')
 const createError = require('http-errors')
-
-const mongoose = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
@@ -25,12 +23,13 @@ app.use(fileUpload({
 }))
 */
 // Routes
-app.use('/utilisateur', require('./routes/Responsable'))
+app.use('/admin', require('./routes/adminRoute'))
+app.use('/user', require('./routes/userRoute'))
+app.use('/form', require('./routes/formBuilderRoute'))
 
-app.use('/admin', require('./routes/superAdmin'))
-app.use('/user', require('./routes/userRouter'))
+// app.use('/auth', require('./routes/authRoute'))
+app.use('/utilisateur', require('./routes/userRoute'))
 app.use('/category', require('./routes/category'))
-app.use('/form', require('./routes/formBuilder'))
 app.use('/object', require('./routes/objectRoute'))
 app.use('/match', require('./routes/matchingRoute'))
 //app.use('/api', require('./routes/upload'))

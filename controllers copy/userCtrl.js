@@ -1,18 +1,8 @@
-const Users = require('../models/userModel')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+// const userModel = require('../models/userModel')
 const sendMail = require('./sendMail'),
     { env } = require('process')
 
-const { google } = require('googleapis')
-const { OAuth2 } = google.auth
-const fetch = require('node-fetch')
-
-const client = new OAuth2(env.MAILING_SERVICE_CLIENT_ID)
-
-const { CLIENT_URL } = env
-
-const userCtrl = {
+module.exports = {
     register: async (req, res) => {
         try {
             const { name, email, password } = req.body
@@ -25,7 +15,7 @@ const userCtrl = {
             if (!validateEmail(email))
                 return res.status(400).json({ msg: 'Invalid emails.' })
 
-            const user = await Users.findOne({ email })
+            const user = await userModel.findOne({ email })
             if (user)
                 return res
                     .status(400)
@@ -36,22 +26,19 @@ const userCtrl = {
                     .status(400)
                     .json({ msg: 'Password must be at least 6 characters.' })
 
-            const passwordHash = await bcrypt.hash(password, 12)
-
-            const newUser = {
-                name,
-                email,
-                password: passwordHash
-            }
-
-            const activation_token = createActivationToken(newUser)
-
-            const url = `${CLIENT_URL}/user/activate/${activation_token}`
-            sendMail(email, url, 'Verify your email address')
-
-            res.json({
-                msg: 'Register Success! Please activate your email to start.'
-            })
+            const newUser = new userModel(req.body)
+            const savedUse = await newUser.save()
+            if (savedUse)
+                res.json({
+                    success: true,
+                    userId: savedUse._id,
+                    isAdmin: savedUse.isAdmin
+                })
+            else
+                res.json({
+                    success: false,
+                    message: 'Registration failed.'
+                })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }
@@ -66,13 +53,13 @@ const userCtrl = {
 
             const { name, email, password } = user
 
-            const check = await Users.findOne({ email })
+            const check = await userModel.findOne({ email })
             if (check)
                 return res
                     .status(400)
                     .json({ msg: 'This email already exists.' })
 
-            const newUser = new Users({
+            const newUser = new userModel({
                 name,
                 email,
                 password
@@ -88,26 +75,36 @@ const userCtrl = {
     login: async (req, res) => {
         try {
             const { email, password } = req.body
-            const user = await Users.findOne({ email })
-            if (!user)
-                return res
-                    .status(400)
-                    .json({ msg: 'This email does not exist.' })
+            if (!validateEmail(email))
+                return res.status(400).json({ msg: 'Invalid emails.' })
 
-            const isMatch = await bcrypt.compare(password, user.password)
+            const user = await userModel.findOne({ email })
+            if (!user)
+                return res.status(400).json({
+                    success: false,
+                    message: 'Login In failed.Please try again.'
+                })
+
+            const isMatch = await user.isValidPassword(password)
             if (!isMatch)
                 return res.status(400).json({ msg: 'Password is incorrect.' })
 
-            const refresh_token = createRefreshToken({ id: user._id })
-            res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: 'http://localhost:5000/user/refresh_token',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            await userModel.findByIdAndUpdate(
+                { _id: user._id },
+                {
+                    isConnected: true
+                }
+            )
+            res.json({
+                success: true,
+                message: `Login success!. Welcome ${user.name}`,
+                userId: user._id,
+                isAdmin: user.isAdmin
             })
-
-            res.json({ msg: 'Login success!' })
         } catch (err) {
-            return res.status(500).json({ msg: err.message })
+            return res
+                .status(500)
+                .json({ success: false, message: err.message })
         }
     },
     getAccessToken: (req, res) => {
@@ -130,7 +127,7 @@ const userCtrl = {
     forgotPassword: async (req, res) => {
         try {
             const { email } = req.body
-            const user = await Users.findOne({ email })
+            const user = await userModel.findOne({ email })
             if (!user)
                 return res
                     .status(400)
@@ -151,7 +148,7 @@ const userCtrl = {
             console.log(password)
             const passwordHash = await bcrypt.hash(password, 12)
 
-            await Users.findOneAndUpdate(
+            await userModel.findOneAndUpdate(
                 { _id: req.user.id },
                 {
                     password: passwordHash
@@ -165,7 +162,9 @@ const userCtrl = {
     },
     getUserInfor: async (req, res) => {
         try {
-            const user = await Users.findById(req.user.id).select('-password')
+            const user = await userModel
+                .findById(req.user.id)
+                .select('-password')
 
             res.json(user)
         } catch (err) {
@@ -174,7 +173,7 @@ const userCtrl = {
     },
     getUsersAllInfor: async (req, res) => {
         try {
-            const users = await Users.find().select('-password')
+            const users = await userModel.find().select('-password')
 
             res.json(users)
         } catch (err) {
@@ -183,20 +182,32 @@ const userCtrl = {
     },
     logout: async (req, res) => {
         try {
-            res.clearCookie('refreshtoken', { path: '/user/refresh_token' })
-            return res.json({ msg: 'Logged out.' })
+            const { userId } = req.params
+            const user = await userModel.findByIdAndUpdate(
+                { _id: userId },
+                {
+                    isConnected: false
+                }
+            )
+            res.json({
+                success: true,
+                message: `Logout success!. Goodbye ${user.name}`,
+                isConnected: false
+            })
         } catch (err) {
-            return res.status(500).json({ msg: err.message })
+            console.log(err)
+            return res
+                .status(500)
+                .json({ success: false, message: err.message })
         }
     },
     updateUser: async (req, res) => {
         try {
             const { name } = req.body
-            await Users.findOneAndUpdate(
+            await userModel.findOneAndUpdate(
                 { _id: req.user.id },
                 {
                     name
-                    
                 }
             )
 
@@ -209,7 +220,7 @@ const userCtrl = {
         try {
             const { role } = req.body
 
-            await Users.findOneAndUpdate(
+            await userModel.findOneAndUpdate(
                 { _id: req.params.id },
                 {
                     role
@@ -223,7 +234,7 @@ const userCtrl = {
     },
     deleteUser: async (req, res) => {
         try {
-            await Users.findByIdAndDelete(req.params.id)
+            await userModel.findByIdAndDelete(req.params.id)
 
             res.json({ msg: 'Deleted Success!' })
         } catch (err) {
@@ -250,7 +261,7 @@ const userCtrl = {
                     .status(400)
                     .json({ msg: 'Email verification failed.' })
 
-            const user = await Users.findOne({ email })
+            const user = await userModel.findOne({ email })
 
             if (user) {
                 const isMatch = await bcrypt.compare(password, user.password)
@@ -308,7 +319,7 @@ const userCtrl = {
 
             const passwordHash = await bcrypt.hash(password, 12)
 
-            const user = await Users.findOne({ email })
+            const user = await userModel.findOne({ email })
 
             if (user) {
                 const isMatch = await bcrypt.compare(password, user.password)
@@ -355,23 +366,3 @@ function validateEmail(email) {
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(email)
 }
-
-const createActivationToken = (payload) => {
-    return jwt.sign(payload, env.ACTIVATION_TOKEN_SECRET, {
-        expiresIn: '5m'
-    })
-}
-
-const createAccessToken = (payload) => {
-    return jwt.sign(payload, env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '15m'
-    })
-}
-
-const createRefreshToken = (payload) => {
-    return jwt.sign(payload, env.REFRESH_TOKEN_SECRET, {
-        expiresIn: '7d'
-    })
-}
-
-module.exports = userCtrl

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-const usersSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -17,11 +17,11 @@ const usersSchema = new mongoose.Schema(
         },
         isAdmin: {
             type: Boolean,
-            default: false // 0 = user, 1 = admin
+            default: true // 0 = admin, 1 = admin
         },
         isConnected: {
             type: Boolean,
-            default: false // 0 = user, 1 = admin
+            default: false // 0 = admin, 1 = admin
         },
         password: {
             type: String,
@@ -31,15 +31,15 @@ const usersSchema = new mongoose.Schema(
     {
         timestamps: true
     },
-    { collection: 'users' }
+    { collection: 'admin' }
 )
-usersSchema.virtual('userId').get(function () {
+adminSchema.virtual('userId').get(function () {
     return this._id.toHexString()
 })
-usersSchema.set('toJSON', {
+adminSchema.set('toJSON', {
     virtuals: true
 })
-usersSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
     try {
         /* 
     Here first checking if the document is new by using a helper of mongoose .isNew, therefore, this.isNew is true if document is new else false, and we only want to hash the password if its a new document, else  it will again hash the password if you save the document again by making some changes in other fields incase your document contains other fields.
@@ -55,8 +55,8 @@ usersSchema.pre('save', async function (next) {
         next(error)
     }
 })
-usersSchema.methods.isValidPassword = async function (password) {
+adminSchema.methods.isValidPassword = async function (password) {
     return bcrypt.compare(password, this.password)
 }
-const userModel = mongoose.model('users', usersSchema)
-module.exports = userModel
+const adminModel = mongoose.model('admin', adminSchema)
+module.exports = adminModel

@@ -30,7 +30,7 @@ const uploadCtrl = {
                 }
             )
         } catch (err) {
-            return res.status(500).json({ "success": false,message: err.message })
+            return res.status(500).json({ msg: err.message })
         }
     }
 }

@@ -1,5 +1,5 @@
 const category = require('../models/Category.Model')
-const FormBuilder = require('../models/formBuilder')
+const FormBuilder = require('../models/formBuilderModel')
 
 exports.addCategory = async (req, res, next) => {
     try {

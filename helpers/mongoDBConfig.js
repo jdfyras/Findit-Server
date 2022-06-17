@@ -9,7 +9,7 @@ mongoose
         {
             dbName: env.DB_NAME_MONGO,
             useCreateIndex: true,
-            useFindAndModify: true,
+            useFindAndModify: false,
             useNewUrlParser: true,
             useUnifiedTopology: true
         },
