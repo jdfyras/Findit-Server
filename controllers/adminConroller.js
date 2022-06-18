@@ -327,6 +327,62 @@ module.exports = {
             })
         }
     },
+    addUser: async (req, res) => {
+        try {
+            var admin = await adminModel.findById({ _id: req.params.userId })
+            if (!req.body || !admin) {
+                return res.status(400).json({
+                    success: false,
+                    userId: req.params.userId,
+                    message: 'Update failed.Please try again.'
+                })
+            }
+            const { name, email, password } = req.body
+
+            if (!name || !email || !password)
+                return res.status(400).json({
+                    success: false,
+                    message: 'Please fill in all fields.'
+                })
+
+            if (!validateEmail(email))
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'Invalid emails.' })
+
+            const user = await userModel.findOne({ email })
+            if (user)
+                return res.status(400).json({
+                    success: false,
+                    message: 'This email already exists.'
+                })
+
+            if (password.length < 6)
+                return res.status(400).json({
+                    success: false,
+                    message: 'Password must be at least 6 characters.'
+                })
+
+            const newUser = new userModel(req.body)
+            const savedUse = await newUser.save()
+            if (savedUse)
+                res.json({
+                    success: true,
+                    userId: req.params.userId,
+                    user: savedUse
+                })
+            else
+                res.json({
+                    success: false,
+                    userId: req.params.userId,
+                    message: 'Add user  failed.'
+                })
+        } catch (err) {
+            return res
+                .status(500)
+                .json({ success: false, message: err.message })
+        }
+    },
     deleteUser: async (req, res) => {
         try {
             let admin = await adminModel.findById({ _id: req.params.userId })
@@ -350,6 +406,8 @@ module.exports = {
                 isConnected: admin.isConnected
             })
         } catch (err) {
+            console.error(err)
+
             return res.status(500).json({
                 success: false,
                 userId: req.params.userId,

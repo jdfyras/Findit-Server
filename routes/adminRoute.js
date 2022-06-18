@@ -10,6 +10,7 @@ const {
     deleteAdmin,
     getusers,
     updateUser,
+    addUser,
     deleteUser
 } = require('../controllers/adminConroller')
 
@@ -21,6 +22,7 @@ router.put('/update/:userId', updateAdmin)
 router.delete('/delete/:userId', deleteAdmin)
 router.get('/getUsers/:userId', getusers)
 router.put('/updateUser/:userId', updateUser)
+router.post('/addUser/:userId', addUser)
 router.delete('/deleteUser/:userId', deleteUser)
 
 module.exports = router
