@@ -59,8 +59,7 @@ module.exports = {
         try {
             const object = await objectModel
                 .findOne({
-                    _id: req.params.id,
-                    refUser: req.body.userId
+                    refUser: req.params.userId
                 })
                 .populate('refCategory')
                 .select()
