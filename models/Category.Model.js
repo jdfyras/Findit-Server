@@ -21,4 +21,4 @@ CategorySchema.virtual('id').get(function () {
 CategorySchema.set('toJSON', {
     virtuals: true
 })
-module.exports = mongoose.model('Category', CategorySchema)
+module.exports = mongoose.model('categories', CategorySchema)

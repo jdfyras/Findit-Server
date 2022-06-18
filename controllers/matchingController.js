@@ -73,6 +73,23 @@ module.exports = {
             next(error)
         }
     },
+    getMatching: async (req, res, next) => {
+        try {
+            const matching = await matchingModel.findOne({
+                foundObject: req.body.objectId
+            }).populate('foundObject lostObject')
+            if (!matching)
+                return res
+                    .status(404)
+                    .send('The matching with the given ID was not found.')
+            return res.json(matching)
+        } catch (error) {
+            if (error.isJoi === true) error.status = 422
+
+            console.log(error)
+            next(error)
+        }
+    },
     addQuestion: async (req, res, next) => {
         try {
             const object = await matchingModel.findOne({

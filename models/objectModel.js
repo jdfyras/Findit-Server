@@ -15,11 +15,11 @@ const objectSchema = new mongoose.Schema({
     },
     refCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'categories'
     },
     refUser: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'users'
     },
     formInput: { type: mongoose.Schema.Types.Mixed },
     dateTime: { type: Date, default: Date.now }
@@ -30,4 +30,4 @@ objectSchema.virtual('id').get(function () {
 objectSchema.set('toJSON', {
     virtuals: true
 })
-module.exports = mongoose.model('object', objectSchema)
+module.exports = mongoose.model('objects', objectSchema)

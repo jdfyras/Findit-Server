@@ -4,11 +4,11 @@ const matchingSchema = new mongoose.Schema({
     results: { type: mongoose.Schema.Types.Mixed },
     lostObject: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Object'
+        ref: 'objects'
     },
     foundObject: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Object'
+        ref: 'objects'
     },
     dateTime: { type: Date, default: Date.now }
 })
@@ -18,4 +18,4 @@ matchingSchema.virtual('id').get(function () {
 matchingSchema.set('toJSON', {
     virtuals: true
 })
-module.exports = mongoose.model('matching', matchingSchema)
+module.exports = mongoose.model('matchings', matchingSchema)
