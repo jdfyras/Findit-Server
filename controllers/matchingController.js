@@ -3,13 +3,25 @@ const objectModel = require('../models/objectModel')
 const validationQuestion = require('../models/validationQuestion')
 const matchingModel = require('../models/matching')
 const categoryModel = require('../models/Category.Model')
+const userModel = require('../models/userModel')
+
 var fuzz = require('fuzzball')
 module.exports = {
     matching: async (req, res, next) => {
         try {
+            let { userId } = req.params
+            let { objectId } = req.body
+            const user = await userModel
+                .findById({ _id: userId })
+                .select('-password -_id -__v')
+            if (!user)
+                return res.status(400).json({
+                    success: false,
+                    userId: req.params.userId,
+                    message: 'user not found'
+                })
             let found = await objectModel
-                .findById('62a908b98ad39d8118c5f18c')
-                // .findById(_id:req.body.objectId,refUser:req.body.userId)
+                .findById({ _id: objectId })
                 .populate('refCategory')
             console.log(found)
             let lost = await objectModel
@@ -25,7 +37,6 @@ module.exports = {
                 choices.push(par)
             }
             console.log(choices)
-
             let options = { scorer: myCustomScorer, returnObjects: true }
             let results = fuzz.extract(query, choices, options)
             console.log(results)
@@ -45,7 +56,15 @@ module.exports = {
 
             abortController.abort()
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-a=new matchingModel({results,})
+            if (results && results.length > 0) {
+                var lostObject = results[0].choice.id
+                let rs = new matchingModel({
+                    results,
+                    foundObject: objectId,
+                    lostObject
+                })
+                await rs.save()
+            }
             res.json(results)
         } catch (error) {
             if (error.isJoi === true) error.status = 422
@@ -56,10 +75,8 @@ a=new matchingModel({results,})
     },
     addQuestion: async (req, res, next) => {
         try {
-            const object = await objectModel.findOne({
-                _id: req.params.objectId,
-                refUser: req.body.userId,
-                statut: 'found'
+            const object = await matchingModel.findOne({
+                foundObject: req.body.objectId
             })
             if (!object)
                 return res
@@ -67,7 +84,7 @@ a=new matchingModel({results,})
                     .send('The object with the given ID was not found.')
             const valid = new validationQuestion({
                 question: req.body.question,
-                foundObject: req.body.objectId
+                refMatching: object._id
             })
             const savedQuestion = await valid.save()
             // res.send({ savedQuestion })
@@ -81,22 +98,21 @@ a=new matchingModel({results,})
     },
     answerQuestion: async (req, res, next) => {
         try {
-            const object = await objectModel.findOne({
-                _id: req.params.objectId,
-                refUser: req.body.userId,
-                statut: 'lost'
+            const object = await matchingModel.findOne({
+                lostObject: req.body.objectId
             })
             if (!object)
                 return res
                     .status(404)
                     .send('The object with the given ID was not found.')
-            const valid = new validationQuestion({
-                question: req.body.question,
-                foundObject: req.body.objectId
-            })
-            const savedQuestion = await valid.save()
+            const savedAnswer = validationQuestion.findOneAndUpdate(
+                {
+                    refMatching: object._id
+                },
+                { answer: req.body.answer }
+            )
             // res.send({ savedQuestion })
-            return res.json(savedQuestion)
+            return res.json(savedAnswer)
         } catch (error) {
             if (error.isJoi === true) error.status = 422
 

@@ -8,17 +8,14 @@ const validationQuestionSchema = new mongoose.Schema({
     answer: {
         type: String
     },
-    lostObject: {
+    refMatching: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Object'
+        ref: 'matchings'
     },
-    foundObject: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Object'
-    },
+
     dateTime: { type: Date, default: Date.now }
 })
-validationQuestionSchema.virtual('id').get(function () {
+validationQuestionSchema.virtual('questionId').get(function () {
     return this._id.toHexString()
 })
 validationQuestionSchema.set('toJSON', {
