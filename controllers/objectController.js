@@ -14,7 +14,7 @@ module.exports = {
                     _id: exist._id
                 },
                 refUser: {
-                    userId: req.body.userId
+                    _id: req.body.userId
                 },
                 statut: req.body.statut,
                 adress: req.body.adress,
@@ -33,7 +33,7 @@ module.exports = {
     getAllObjects: async (req, res, next) => {
         try {
             const objects = await objectModel
-                .find({ refUser: req.body.userId })
+                .find()
                 .populate('refCategory')
                 .select()
             console.log(objects)
@@ -58,7 +58,7 @@ module.exports = {
     getObject: async (req, res, next) => {
         try {
             const object = await objectModel
-                .findOne({
+                .find({
                     refUser: req.params.userId
                 })
                 .populate('refCategory')

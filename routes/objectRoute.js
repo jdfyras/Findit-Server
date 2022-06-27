@@ -10,10 +10,10 @@ const {
 } = require('../controllers/objectController.js')
 
 router.post('/addObject', addObject)
-router.delete('/deleteObject/:id', deleteObject)
-router.put('/updateObject/:id', updateObject)
-router.get('/getObject/:id', getObject)
-router.get('/getObjectByCategory/:id', getObjectByCategory)
+router.delete('/deleteObject/:userId', deleteObject)
+router.put('/updateObject/:userId', updateObject)
+router.get('/getObject/:userId', getObject)
+router.get('/getObjectByCategory/:userId', getObjectByCategory)
 router.get('/getAllObjects', getAllObjects)
 // router.get('', getObject)
 

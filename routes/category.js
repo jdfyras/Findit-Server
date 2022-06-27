@@ -4,15 +4,15 @@ const storage = require('../multerUpload')
 const categoryController = require('../controllers/categoryController')
 
 router.post('/addCateogry', storage, categoryController.addCategory)
-router.delete('/deleteCateogry/:_id', categoryController.deleteCategory)
-router.post('/updateCategory/:_id', categoryController.updateCategoryName)
+router.delete('/deleteCateogry/:categoryId', categoryController.deleteCategory)
+router.post('/updateCategory/:categoryId', categoryController.updateCategoryName)
 router.get('', categoryController.getCategorys)
-router.get('/:_id', categoryController.getCategory)
+router.get('/:categoryId', categoryController.getCategory)
 router.post(
-    '/updateCategoryImage/:_id',
+    '/updateCategoryImage/:categoryId',
     storage,
     categoryController.updateCategoryImage
 )
-router.get('/formBuilder/:_id', categoryController.getFormByCategory)
+router.get('/formBuilder/:formId', categoryController.getFormByCategory)
 
 module.exports = router

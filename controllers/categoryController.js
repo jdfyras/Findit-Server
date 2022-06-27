@@ -18,8 +18,8 @@ exports.addCategory = async (req, res, next) => {
 }
 exports.deleteCategory = async (req, res, next) => {
     try {
-        const _id = req.params._id
-        const response = await category.findByIdAndDelete(_id)
+        const categoryId = req.params.categoryId
+        const response = await category.findByIdAndDelete(categoryId)
         res.status(201).send(response)
         //TODO DELETE IMAGE
     } catch (err) {
@@ -29,8 +29,8 @@ exports.deleteCategory = async (req, res, next) => {
 }
 exports.updateCategoryName = async (req, res, next) => {
     try {
-        const _id = req.params._id
-        const categoryy = await category.findByIdAndUpdate(_id, {
+        const categoryId = req.params.categoryId
+        const categoryy = await category.findByIdAndUpdate(categoryId, {
             name: req.body.name
         })
         res.status(201).send({ message: 'updated' })
@@ -41,18 +41,20 @@ exports.updateCategoryName = async (req, res, next) => {
 }
 exports.updateCategoryImage = async (req, res, next) => {
     try {
-        const _id = req.params._id
-        const response = await category.findByIdAndUpdate(_id, {
+        const categoryId = req.params.categoryId
+        const response = await category.findByIdAndUpdate(categoryId, {
             image: 'http://localhost:5000/image/' + req.file.filename
         })
         res.status(201).send({ message: 'updated' })
     } catch (err) {
-        console.error(err)}
+        console.error(err)
+    }
 }
 exports.getCategorys = async (req, res, next) => {
     try {
-        const response = await category.find().populate('formId')
-        res.status(201).send(response)
+        const rs = await category.find().populate('formId')
+        console.table(rs)
+        res.status(201).json(rs)
     } catch (err) {
         console.error(err)
         res.send(err)
@@ -60,8 +62,8 @@ exports.getCategorys = async (req, res, next) => {
 }
 exports.getCategory = async (req, res, next) => {
     try {
-        const _id = req.params._id
-        const cat = await category.findById(_id).populate('formId')
+        const categoryId = req.params.categoryId
+        const cat = await category.findById(categoryId).populate('formId')
         res.status(201).send(cat)
     } catch (err) {
         console.error(err)
@@ -71,8 +73,8 @@ exports.getCategory = async (req, res, next) => {
 }
 exports.getFormByCategory = async (req, res, next) => {
     try {
-        const _id = req.params._id
-        const cat = category.find({ formId: _id })
+        const formId = req.params.formId
+        const cat = category.find({ formId: formId })
         res.send(cat)
     } catch (err) {
         console.error(err)

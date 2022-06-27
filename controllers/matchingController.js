@@ -122,7 +122,7 @@ module.exports = {
                 return res
                     .status(404)
                     .send('The object with the given ID was not found.')
-            const savedAnswer = validationQuestion.findOneAndUpdate(
+            const savedAnswer = await validationQuestion.findOneAndUpdate(
                 {
                     refMatching: object._id
                 },

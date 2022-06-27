@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const FormBuilderSchema = new mongoose.Schema(
     {
-        formData: { type: mongoose.Schema.Types.Mixed }
+        formData:   [ mongoose.Schema.Types.Mixed]
     },
     { collection: 'formBuilder' }
 )
