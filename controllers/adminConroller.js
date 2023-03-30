@@ -81,6 +81,8 @@ module.exports = {
                 message: `Login success!. Welcome ${admin.name}`,
                 userId: admin._id,
                 isAdmin: admin.isAdmin,
+                userName: admin.name,
+                email: admin.email,
                 isConnected: true
             })
         } catch (err) {
